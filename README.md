@@ -1,2 +1,3 @@
 # Alexa-Alarm-Android
-android app for Alexa-Alarm
+
+CSE 408
