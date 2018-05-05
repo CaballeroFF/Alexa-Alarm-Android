@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
         pick = findViewById(R.id.pick_date);
         test = findViewById(R.id.test);
 
-        Log.v("TEST", "TEST");
+        Log.v("TEST", "test");
 
 
         setURLButton.setOnClickListener(new View.OnClickListener() {
