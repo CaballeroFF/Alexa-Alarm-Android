@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/OutPutLayout"
+        android:layout_width="match_parent"
+        android:layout_height="141dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/OutPutText"
+            android:layout_width="0dp"
+            android:layout_height="136dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:text="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/RequestButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/GETRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="GET" />
+
+        <Button
+            android:id="@+id/POSTRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="POST" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/URLConnection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <EditText
+            android:id="@+id/URLText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="URL" />
+
+        <Button
+            android:id="@+id/SetURLButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SetURL" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/test_date_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/pick_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick" />
+
+        <Button
+            android:id="@+id/test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
+    </LinearLayout>
+</LinearLayout>
