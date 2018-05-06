@@ -15,8 +15,7 @@ public class DateFormater {
         String fHour = String.format(Locale.US,"%02d", hour);
         String fMinute = String.format(Locale.US,"%02d", minute);
 
-        String s = Integer.toString(year) + "-" + fMonth + "-" +
-                fDay + "  " + fHour + ":" + fMinute;
+        String s = fHour + ":" + fMinute + " " + Integer.toString(year) + "-" + fMonth + "-" + fDay;
         return s;
     }
 
@@ -71,6 +70,7 @@ public class DateFormater {
                 duration = String.format("P%sDT%sH%sM", day, hour, minute);
                 break;
         }
+        duration += " today";
         return duration;
     }
 

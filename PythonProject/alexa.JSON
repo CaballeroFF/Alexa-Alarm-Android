@@ -1,0 +1,132 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "project",
+            "intents": [
+                {
+                    "name": "NoIntent",
+                    "slots": [
+                        {
+                            "name": "atime",
+                            "type": "AMAZON.TIME"
+                        }
+                    ],
+                    "samples": [
+                        "no",
+                        "stop",
+                        "delete {atime}"
+                    ]
+                },
+                {
+                    "name": "YesIntent",
+                    "slots": [
+                        {
+                            "name": "atime",
+                            "type": "AMAZON.TIME"
+                        },
+                        {
+                            "name": "adate",
+                            "type": "AMAZON.DATE"
+                        }
+                    ],
+                    "samples": [
+                        "yes",
+                        "yeah",
+                        "set alarm at {atime}     {adate}",
+                        "set alarm {atime} {adate}",
+                        "set alarm to {atime} {adate}",
+                        "set alarm for {atime} {adate}",
+                        "for {atime} {adate}",
+                        "set alarm {adate} at {atime}"
+                    ]
+                },
+                {
+                    "name": "DefaultIntent",
+                    "slots": [],
+                    "samples": [
+                        "how many ",
+                        "default",
+                        "please",
+                        "okay",
+                        "ok then",
+                        "I don't know",
+                        "how",
+                        "when",
+                        "where",
+                        "who",
+                        "what"
+                    ]
+                },
+                {
+                    "name": "ListIntent",
+                    "slots": [],
+                    "samples": [
+                        "list",
+                        "give me a list of my alarms",
+                        "what are my alarms",
+                        "list my alarms"
+                    ]
+                },
+                {
+                    "name": "ClearIntent",
+                    "slots": [],
+                    "samples": [
+                        "clear my alarms",
+                        "clear alarms",
+                        "clear"
+                    ]
+                },
+                {
+                    "name": "Duration",
+                    "slots": [
+                        {
+                            "name": "aduration",
+                            "type": "AMAZON.DURATION"
+                        }
+                    ],
+                    "samples": [
+                        "set alarm in {aduration}",
+                        "in {aduration}"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "CUSTOM_DATE",
+                    "values": [
+                        {
+                            "id": "tomorrow",
+                            "name": {
+                                "value": "tomorrow"
+                            }
+                        },
+                        {
+                            "id": "yesterday",
+                            "name": {
+                                "value": "yesterday"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "name": {
+                                "value": "2",
+                                "synonyms": [
+                                    "two"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "today",
+                            "name": {
+                                "value": "Today",
+                                "synonyms": [
+                                    "now"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
