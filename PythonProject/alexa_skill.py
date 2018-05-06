@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_ask import Ask, statement, session, question
 from datetime import datetime
 
-import delight_clock as dl
+import delighted_clock as dl
 import multiprocessing
 import psutil
 import os
