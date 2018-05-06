@@ -1,11 +1,12 @@
-from flask import Flask
+from flask import Flask, request
 from flask_ask import Ask, statement, session, question
 from datetime import datetime
 
-import delighted_clock as dl
+import deClock as dl
 import multiprocessing
 import psutil
 import os
+import json
 
 app = Flask(__name__)
 ask = Ask(app, "/skill")
@@ -16,6 +17,58 @@ dct = {}
 @app.route('/')
 def homepage():
     return "hi there, how is it going."
+
+
+@app.route('/listalarms', methods=['GET', 'POST'])
+def alarms_list_route():
+
+    send_message = 'nothing sent'
+
+    if request.method == 'POST':
+        # clear alarms on method POST
+        clear_alarms()
+        send_message = 'alarms cleared'
+    if request.method == 'GET':
+        # list alarms on method GET
+        list_alarms()
+        # string of all dct keys (the alarms) joined by a space
+        send_message = ' '.join(list(dct.keys()))
+    return json.dumps(dct)
+
+
+@app.route('/setalarm', methods=['GET', 'POST'])
+def alarm_set_route():
+
+    send_message = 'nothing sent'
+    is_duration = False
+
+    if request.method == 'POST':
+        # get data from POST method (get_data() will be deprecated soon)
+        post_data = request.get_data().decode()
+        # post_data is 'hh:mm yyyy-MM-dd' format
+        date_list = str(post_data).split(" ")
+        # time portion of data after split
+        time = date_list[0]
+        # date portion of data after split
+        date = date_list[2]
+
+        # check if time is in ISO-8601 duration format
+        # meaning it has a letter not just numbers
+        for character in time:
+            if character.isalpha():
+                is_duration = True
+
+        # if the time is a duration call duration function
+        # otherwise call normal set alarm function
+        if is_duration:
+            duration(time)
+        else:
+            yes_intent(time, date)
+        send_message = 'alarm set for {} {}'.format(time, date)
+
+    # returns message when GET method is called
+    return json.dumps(send_message)
+
 
 def print_console(msg):
 	pounds = '#'
