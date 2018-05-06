@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_ask import Ask, statement, session, question
 from datetime import datetime
 
-import deClock as dl
+import delight_clock as dl
 import multiprocessing
 import psutil
 import os
@@ -16,58 +16,56 @@ dct = {}
 
 @app.route('/')
 def homepage():
-    return "hi there, how is it going."
+	return "hi there, how is it going."
 
 
 @app.route('/listalarms', methods=['GET', 'POST'])
 def alarms_list_route():
+	send_message = 'nothing sent'
 
-    send_message = 'nothing sent'
-
-    if request.method == 'POST':
-        # clear alarms on method POST
-        clear_alarms()
-        send_message = 'alarms cleared'
-    if request.method == 'GET':
-        # list alarms on method GET
-        list_alarms()
-        # string of all dct keys (the alarms) joined by a space
-        send_message = ' '.join(list(dct.keys()))
-    return json.dumps(dct)
+	if request.method == 'POST':
+		# clear alarms on method POST
+		clear_alarms()
+		send_message = 'alarms cleared'
+	if request.method == 'GET':
+		# list alarms on method GET
+		list_alarms()
+		# string of all dct keys (the alarms) joined by a space
+		send_message = ' '.join(list(dct.keys()))
+	return json.dumps(send_message)
 
 
 @app.route('/setalarm', methods=['GET', 'POST'])
 def alarm_set_route():
+	send_message = 'nothing sent'
+	is_duration = False
 
-    send_message = 'nothing sent'
-    is_duration = False
+	if request.method == 'POST':
+		# get data from POST method (get_data() will be deprecated soon)
+		post_data = request.get_data().decode()
+		# post_data is 'hh:mm yyyy-MM-dd' format
+		date_list = str(post_data).split(" ")
+		# time portion of data after split
+		time = date_list[0]
+		# date portion of data after split
+		date = date_list[2]
 
-    if request.method == 'POST':
-        # get data from POST method (get_data() will be deprecated soon)
-        post_data = request.get_data().decode()
-        # post_data is 'hh:mm yyyy-MM-dd' format
-        date_list = str(post_data).split(" ")
-        # time portion of data after split
-        time = date_list[0]
-        # date portion of data after split
-        date = date_list[2]
+		# check if time is in ISO-8601 duration format
+		# meaning it has a letter not just numbers
+		for character in time:
+			if character.isalpha():
+				is_duration = True
 
-        # check if time is in ISO-8601 duration format
-        # meaning it has a letter not just numbers
-        for character in time:
-            if character.isalpha():
-                is_duration = True
+		# if the time is a duration call duration function
+		# otherwise call normal set alarm function
+		if is_duration:
+			duration(time)
+		else:
+			yes_intent(time, date)
+		send_message = 'alarm set for {} {}'.format(time, date)
 
-        # if the time is a duration call duration function
-        # otherwise call normal set alarm function
-        if is_duration:
-            duration(time)
-        else:
-            yes_intent(time, date)
-        send_message = 'alarm set for {} {}'.format(time, date)
-
-    # returns message when GET method is called
-    return json.dumps(send_message)
+		# returns message when GET method is called
+		return json.dumps(send_message)
 
 
 def print_console(msg):
@@ -79,55 +77,56 @@ def print_console(msg):
 	print('#   ' + msg + '   #')
 	print(pounds + '\n')
 
+
 @ask.launch
 def satart_skill():
-    welcome_msg = 'Hello there, can I help you?'
-    print_console(welcome_msg)
-    return question(welcome_msg)
+	welcome_msg = 'Hello there, can I help you?'
+	print_console(welcome_msg)
+	return question(welcome_msg)
 
 
 @ask.intent("Duration", default={'aduration': 'default'})
 def duration(aduration):
-    global dct
-    print('Intent duration result: ', aduration)
+	global dct
+	print('Intent duration result: ', aduration)
 
-    atime = dl.alarm_duration(aduration)[0]
-    adate = dl.alarm_duration(aduration)[1]
-    print('the date is', atime, ' ', adate)
+	atime = dl.alarm_duration(aduration)[0]
+	adate = dl.alarm_duration(aduration)[1]
+	print('the date is', atime, ' ', adate)
 
-    p = multiprocessing.Process(target=set_alarm, args=(atime, adate))
-    p.start()
-    n = p.pid
-    print('created child process: ', multiprocessing.active_children())
-    print('with process ID: ', n)
-    
-    dct[atime] = n
-    print('Dictionary entries: ', dct)
+	p = multiprocessing.Process(target=set_alarm, args=(atime, adate))
+	p.start()
+	n = p.pid
+	print('created child process: ', multiprocessing.active_children())
+	print('with process ID: ', n)
 
-    d = datetime.strptime(atime, '%H:%M')
-    print('formated time: ', d.strftime("%I:%M %p"))
+	dct[atime] = n
+	print('Dictionary entries: ', dct)
 
-    msg = 'your alarm is set to {}, {}'.format(d.strftime("%I:%M %p"), adate)
-    print_console(msg)
-    return statement(msg)
-    
-    
+	d = datetime.strptime(atime, '%H:%M')
+	print('formated time: ', d.strftime("%I:%M %p"))
+
+	msg = 'your alarm is set to {}, {}'.format(d.strftime("%I:%M %p"), adate)
+	print_console(msg)
+	return statement(msg)
+
+
 @ask.intent("ClearIntent")
 def clear_alarms():
-    global dct
-    
-    update_dct()
-    
-    if dct:
-        for k in dct:
-            p = psutil.Process(dct[k])
-            p.terminate()
-        msg = 'clearing alarms.'
-        dct = {}
-    else:
-        msg = 'alarms already empty.'
-    print_console(msg)
-    return statement(msg)
+	global dct
+
+	update_dct()
+
+	if dct:
+		for k in dct:
+			p = psutil.Process(dct[k])
+			p.terminate()
+		msg = 'clearing alarms.'
+		dct = {}
+	else:
+		msg = 'alarms already empty.'
+	print_console(msg)
+	return statement(msg)
 
 
 @ask.intent("ListIntent")
@@ -168,7 +167,7 @@ def yes_intent(atime, adate):
 	print('created child process: ', multiprocessing.active_children())
 	print('with process ID: ', n)
 	dct[atime] = n
-    
+
 	print('dictionary ............', dct)
 	print('............', dct[atime])
 
@@ -176,29 +175,31 @@ def yes_intent(atime, adate):
 	print('formated time "', d.strftime("%I:%M %p"))
 	headline_msg = 'your alarm is set to {}, {}'.format(d.strftime("%I:%M %p"), adate)
 	print_console(headline_msg)
+
 	return statement(headline_msg)
 
 
 @ask.intent("NoIntent", default={"atime": None})
 def no_intent(atime):
-    global dct
-    
-    update_dct()
+	global dct
+
+	update_dct()
 	bye_msg = ''
-    analarm = False
-    
-    print('\nactive child process: ', multiprocessing.active_children())
-    parent = psutil.Process(os.getpid())
-	
+
+	analarm = False
+
+	print('\nactive child process: ', multiprocessing.active_children())
+	parent = psutil.Process(os.getpid())
+
 	for key in dct:
-    	print(key)
-    	if key == atime:
-        	print(key, True)
-        	analarm = True
-			
-    for child in parent.children(recursive=True):
-        print('child...... ', child)
-    if not dct or atime is None:
+		print(key)
+		if key == atime:
+			print(key, True)
+			analarm = True
+
+	for child in parent.children(recursive=True):
+		print('child...... ', child)
+	if not dct or atime is None:
 		print('ok........')
 		print('Dictionary ...........', dct)
 		bye_msg = 'alarms are empty.'
@@ -206,17 +207,17 @@ def no_intent(atime):
 		d = datetime.strptime(atime, '%H:%M')
 		bye_msg = '{} is not in your alarms'.format(d.strftime("%I:%M %p"))
 	else:
-		#print(dct, dct[atime])
+		# print(dct, dct[atime])
 		p = psutil.Process(dct[atime])
 		p.terminate()
 		dct.pop(atime, None)
 		d = datetime.strptime(atime, '%H:%M')
 		bye_msg = '{} alarm deleted'.format(d.strftime("%I:%M %p"))
-    for child in parent.children(recursive=True):
-        print('child.....', child)
-        
-	print_console(bye_msg)
-    return statement(bye_msg)
+	for child in parent.children(recursive=True):
+		print('child.....', child)
+
+		print_console(bye_msg)
+	return statement(bye_msg)
 
 
 @ask.intent("DefaultIntent")
@@ -225,15 +226,15 @@ def default_state():
 	msg = 'I\'m sorry, I didn\'t understand that'
 	print_console(msg)
 	return statement(msg)
-    
+
 
 def set_alarm(tstr, dstr):
 	global dct
-	
+
 	returned = dl.set_alarm(tstr, dstr)
 	print(returned, ' ,its back')
-	
-	
+
+
 def update_dct():
 	global dct
 	print('dictionary.......', dct)
@@ -250,4 +251,4 @@ def update_dct():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+	app.run(debug=True)
