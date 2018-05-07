@@ -1,12 +1,18 @@
 package com.example.caballero.delighted;
 
+import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -17,7 +23,7 @@ import android.text.format.DateFormat;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
-public class TabOneFragment extends AppCompatActivity implements
+public class TabOneFragment extends android.support.v4.app.Fragment implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
         NumberPicker.OnValueChangeListener{
 
@@ -35,10 +41,10 @@ public class TabOneFragment extends AppCompatActivity implements
 
     private String TAG = "HTTPREQUEST";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.tab1_frag);
+//    @Override
+    @Nullable
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.tab1_frag,container,false);
 
         outPutText = findViewById(R.id.OutPutText);
         URLText = findViewById(R.id.URLText);
@@ -97,6 +103,8 @@ public class TabOneFragment extends AppCompatActivity implements
                 pickTime();
             }
         });
+		
+		return view;
     }
 
     //HTTP requests
@@ -211,6 +219,7 @@ public class TabOneFragment extends AppCompatActivity implements
                 String minute = String.valueOf(numberMinutePicker.getValue());
                 String duration = new DateFormater().formatedDuration(day, hour, minute);
                 outPutText.setText(duration);
+
                 //set rout/path to setalarm
                 URLPath = "setalarm";
                 //run HTTP POST
