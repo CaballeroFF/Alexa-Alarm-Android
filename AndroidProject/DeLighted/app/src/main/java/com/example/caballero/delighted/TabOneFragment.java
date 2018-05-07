@@ -46,14 +46,14 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab1_frag,container,false);
 
-        outPutText = findViewById(R.id.OutPutText);
-        URLText = findViewById(R.id.URLText);
-        Button setURLButton = findViewById(R.id.SetURLButton);
-        Button setAlarmDateButton = findViewById(R.id.pick_date);
-        Button setAlarmDurationButton = findViewById(R.id.pick_duration);
-        Button listAlamrsButton = findViewById(R.id.list_alarms);
-        Button clearAlarmsButton = findViewById(R.id.clear_alarms);
-        Button deleteAlarmsButton = findViewById(R.id.delete_alarm);
+        outPutText = view.findViewById(R.id.OutPutText);
+        URLText = view.findViewById(R.id.URLText);
+        Button setURLButton = view.findViewById(R.id.SetURLButton);
+        Button setAlarmDateButton = view.findViewById(R.id.pick_date);
+        Button setAlarmDurationButton = view.findViewById(R.id.pick_duration);
+        Button listAlamrsButton = view.findViewById(R.id.list_alarms);
+        Button clearAlarmsButton = view.findViewById(R.id.clear_alarms);
+        Button deleteAlarmsButton = view.findViewById(R.id.delete_alarm);
 
         setURLButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +144,7 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         //open dialog to pick date
-        DatePickerDialog datePickerDialog = new DatePickerDialog(TabOneFragment.this, TabOneFragment.this,
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), TabOneFragment.this,
                 year, month, day);
         datePickerDialog.show();
     }
@@ -160,8 +160,8 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
         //run time dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(TabOneFragment.this, TabOneFragment.this,
-                hour, minute, DateFormat.is24HourFormat(this));
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), TabOneFragment.this,
+                hour, minute, DateFormat.is24HourFormat(getContext()));
         timePickerDialog.show();
     }
 
@@ -185,7 +185,7 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
 
     public void showDurationDialog(){
         //setup dialog
-        final Dialog dialog = new Dialog(TabOneFragment.this);
+        final Dialog dialog = new Dialog(getContext());
         dialog.setTitle("pick");
         dialog.setContentView(R.layout.dialog);
 
