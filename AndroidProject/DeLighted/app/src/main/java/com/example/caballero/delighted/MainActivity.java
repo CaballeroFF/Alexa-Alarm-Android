@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.text.format.DateFormat;
 
@@ -23,15 +22,14 @@ public class MainActivity extends AppCompatActivity implements
         NumberPicker.OnValueChangeListener{
 
     private EditText outPutText;
-
     private EditText URLText;
-    private Button getButton;
-    private Button postButton;
-    private Button setURLButton;
-    private Button pick;
-    private Button test;
+
+    private final String PROTOCOL = "https://";
+    private final String DOMAIN = ".ngrok.io/";
 
     private String URLString;
+    private String URLFileName;
+    private String URLPath;
     private String outPutString;
     private int year, month, day, hour, minute;
 
@@ -44,82 +42,108 @@ public class MainActivity extends AppCompatActivity implements
 
         outPutText = findViewById(R.id.OutPutText);
         URLText = findViewById(R.id.URLText);
-        getButton = findViewById(R.id.GETRequest);
-        postButton = findViewById(R.id.POSTRequest);
-        setURLButton = findViewById(R.id.SetURLButton);
-        pick = findViewById(R.id.pick_date);
-        test = findViewById(R.id.test);
-
-        Log.v("TEST", "test");
-
+        Button setURLButton = findViewById(R.id.SetURLButton);
+        Button setAlarmDateButton = findViewById(R.id.pick_date);
+        Button setAlarmDurationButton = findViewById(R.id.pick_duration);
+        Button listAlamrsButton = findViewById(R.id.list_alarms);
+        Button clearAlarmsButton = findViewById(R.id.clear_alarms);
+        Button deleteAlarmsButton = findViewById(R.id.delete_alarm);
 
         setURLButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                URLString = URLText.getText().toString();
+                URLString = PROTOCOL + URLText.getText().toString() + DOMAIN;
                 Log.v(TAG, "URL: " + URLString);
             }
         });
 
-        getButton.setOnClickListener(new View.OnClickListener() {
+        //set URLPath on every Button to correct path
+        setAlarmDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(URLString != null){
-                    GetURLContentTask getURLContentTask = new GetURLContentTask();
-                    getURLContentTask.execute(URLString);
-                    try{
-                        outPutString = getURLContentTask.get();
-                    } catch (InterruptedException e){
-                        e.printStackTrace();
-                    } catch (ExecutionException e){
-                        e.printStackTrace();
-                    }
-
-                    Log.v(TAG, outPutString);
-                    outPutText.setText(outPutString);
-                } else {
-                    Log.v(TAG, "URLString is null");
-                }
+                URLPath = "setalarm";
+                pickTime();
             }
         });
 
-        postButton.setOnClickListener(new View.OnClickListener() {
+        setAlarmDurationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                outPutString = outPutText.getText().toString();
-                if(URLString != null){
-                    PostURLContentTask postURLContentTask = new PostURLContentTask();
-                    postURLContentTask.execute(URLString, outPutString);
-                } else {
-                    Log.v(TAG, "URLString is null");
-                }
+                URLPath = "setalarm";
+                showDurationDialog();
             }
         });
 
-        pick.setOnClickListener(new View.OnClickListener() {
+        listAlamrsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, MainActivity.this,
-                        year, month, day);
-                datePickerDialog.show();
+                URLPath = "listalarms";
+                doGet();
             }
         });
 
-        test.setOnClickListener(new View.OnClickListener() {
+        clearAlarmsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                show();
+                URLPath = "clearalarms";
+                doGet();
+            }
+        });
+
+        deleteAlarmsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                URLPath = "deletealarm";
+                pickTime();
             }
         });
     }
 
+    //HTTP requests
+    public void doPost(){
+        outPutString = outPutText.getText().toString();
+        if(URLString != null){
+            PostURLContentTask postURLContentTask = new PostURLContentTask();
+            postURLContentTask.execute(URLString + URLPath, outPutString);
+        } else {
+            Log.v(TAG, "URLString is null");
+        }
+    }
+
+    public void doGet(){
+        if(URLString != null){
+            GetURLContentTask getURLContentTask = new GetURLContentTask();
+            getURLContentTask.execute(URLString + URLPath);
+            try{
+                outPutString = getURLContentTask.get();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            } catch (ExecutionException e){
+                e.printStackTrace();
+            }
+
+            Log.v(TAG, outPutString);
+            outPutText.setText(outPutString);
+        } else {
+            Log.v(TAG, "URLString is null");
+        }
+    }
+
+    // dialog code
+    public void pickTime(){
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        //open dialog to pick date
+        DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, MainActivity.this,
+                year, month, day);
+        datePickerDialog.show();
+    }
+
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        // runs after "ok" is pressed on dialog
         year = i;
         month = i1 + 1;
         day = i2;
@@ -127,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements
         Calendar calendar = Calendar.getInstance();
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
+        //run time dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, MainActivity.this,
                 hour, minute, DateFormat.is24HourFormat(this));
         timePickerDialog.show();
@@ -134,11 +159,15 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        // runs after "ok" is pressed
         hour = i;
         minute = i1;
-
+        //format into hh:mm yyyy-mm-dd
         String s = new DateFormater().formatedDate(year, month, day, hour, minute);
+
         outPutText.setText(s);
+        //run HTTP POST
+        doPost();
     }
 
     @Override
@@ -146,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(TAG,"..."+i1);
     }
 
-    public void show(){
+    public void showDurationDialog(){
         //setup dialog
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.setTitle("pick");
@@ -182,6 +211,10 @@ public class MainActivity extends AppCompatActivity implements
                 String minute = String.valueOf(numberMinutePicker.getValue());
                 String duration = new DateFormater().formatedDuration(day, hour, minute);
                 outPutText.setText(duration);
+                //set rout/path to setalarm
+                URLPath = "setalarm";
+                //run HTTP POST
+                doPost();
                 dialog.dismiss();
             }
         });

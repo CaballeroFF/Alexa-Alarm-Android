@@ -27,21 +27,37 @@
         android:id="@+id/RequestButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <Button
-            android:id="@+id/GETRequest"
-            android:layout_width="wrap_content"
+            android:id="@+id/pick_date"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="GET" />
+            android:text="Set Date" />
 
         <Button
-            android:id="@+id/POSTRequest"
-            android:layout_width="wrap_content"
+            android:id="@+id/pick_duration"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="POST" />
+            android:text="Set Duration" />
+
+        <Button
+            android:id="@+id/list_alarms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="List Alarms" />
+
+        <Button
+            android:id="@+id/clear_alarms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clear Alarms" />
+
+        <Button
+            android:id="@+id/delete_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete" />
     </LinearLayout>
 
     <LinearLayout
@@ -66,23 +82,4 @@
             android:text="SetURL" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/test_date_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/pick_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pick" />
-
-        <Button
-            android:id="@+id/test"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-
-    </LinearLayout>
 </LinearLayout>
