@@ -74,13 +74,13 @@
             android:id="@+id/pick_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pick" />
+            android:text="Date" />
 
         <Button
             android:id="@+id/test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Nap" />
 
     </LinearLayout>
 </LinearLayout>

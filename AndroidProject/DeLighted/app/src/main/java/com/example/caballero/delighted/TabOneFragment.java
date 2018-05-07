@@ -125,7 +125,7 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
                 month = calendar.get(Calendar.MONTH);
                 day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity().getApplicationContext(), TabOneFragment.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), TabOneFragment.this,
                         year, month, day);
                 datePickerDialog.show();
             }
@@ -150,8 +150,8 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         Calendar calendar = Calendar.getInstance();
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity().getApplicationContext(), TabOneFragment.this,
-                hour, minute, DateFormat.is24HourFormat(getActivity().getApplicationContext()));
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), TabOneFragment.this,
+                hour, minute, DateFormat.is24HourFormat(getActivity()));
         timePickerDialog.show();
     }
 
@@ -171,7 +171,7 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
 
     public void show(){
         //setup dialog
-        final Dialog dialog = new Dialog(getActivity().getApplicationContext());
+        final Dialog dialog = new Dialog(getActivity());
         dialog.setTitle("pick");
         dialog.setContentView(R.layout.dialog);
 
