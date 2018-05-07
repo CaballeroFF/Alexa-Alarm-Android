@@ -1,13 +1,11 @@
 package com.example.caballero.delighted;
 
-import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,9 +16,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
-import android.text.format.DateFormat;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class TabOneFragment extends android.support.v4.app.Fragment implements
@@ -39,7 +37,7 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
     private String outPutString;
     private int year, month, day, hour, minute;
 
-    private String TAG = "HTTPREQUEST";
+    private String TAG = "DEBUG";
 
 //    @Override
     @Nullable
@@ -54,6 +52,8 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         Button listAlamrsButton = view.findViewById(R.id.list_alarms);
         Button clearAlarmsButton = view.findViewById(R.id.clear_alarms);
         Button deleteAlarmsButton = view.findViewById(R.id.delete_alarm);
+        Button snoozeAlarmButton = view.findViewById(R.id.snooze_alarm);
+        Button stopAlarmButton = view.findViewById(R.id.stop_alarm);
 
         setURLButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +68,7 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
             @Override
             public void onClick(View view) {
                 URLPath = "setalarm";
+                getCalendarInstance();
                 pickTime();
             }
         });
@@ -85,6 +86,8 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
             public void onClick(View view) {
                 URLPath = "listalarms";
                 doGet();
+                //clear outputstring every time after use
+                outPutString = null;
             }
         });
 
@@ -93,6 +96,8 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
             public void onClick(View view) {
                 URLPath = "clearalarms";
                 doGet();
+                //clear outputstring every time after use
+                outPutString = null;
             }
         });
 
@@ -101,6 +106,32 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
             public void onClick(View view) {
                 URLPath = "deletealarm";
                 pickTime();
+            }
+        });
+
+        snoozeAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getCalendarInstance();
+                String s = new DateFormater().formatedDate(year, month, day, hour, minute);
+                String[] sl = s.split(" ");
+                outPutText.setText(sl[0]);
+            }
+        });
+
+        stopAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                URLPath = "listalarms";
+                doGet();
+                getCalendarInstance();
+                String s = new DateFormater().formatedDate(year, month, day, hour, minute);
+                String[] sl = s.split(" ");
+                String twoDates = outPutString + "...." + sl[0];
+                boolean areEqual = sl[0].equals(outPutString);
+                outPutString = null;
+                Log.v(TAG, Boolean.toString(areEqual) + ">>>>>>>>>>>>>");
+                outPutText.setText(twoDates);
             }
         });
 		
@@ -124,6 +155,7 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
             getURLContentTask.execute(URLString + URLPath);
             try{
                 outPutString = getURLContentTask.get();
+                outPutString = outPutString.replace("\"", "");
             } catch (InterruptedException e){
                 e.printStackTrace();
             } catch (ExecutionException e){
@@ -137,12 +169,19 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         }
     }
 
-    // dialog code
-    public void pickTime(){
+    // repeated code for calendar made into a function instead
+    public void getCalendarInstance(){
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+    }
+
+    // dialog code
+    public void pickTime(){
+        //call getCalendarInstance() before this function
         //open dialog to pick date
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), TabOneFragment.this,
                 year, month, day);
@@ -156,9 +195,6 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         month = i1 + 1;
         day = i2;
 
-        Calendar calendar = Calendar.getInstance();
-        hour = calendar.get(Calendar.HOUR_OF_DAY);
-        minute = calendar.get(Calendar.MINUTE);
         //run time dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), TabOneFragment.this,
                 hour, minute, DateFormat.is24HourFormat(getContext()));
@@ -220,8 +256,6 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
                 String duration = new DateFormater().formatedDuration(day, hour, minute);
                 outPutText.setText(duration);
 
-                //set rout/path to setalarm
-                URLPath = "setalarm";
                 //run HTTP POST
                 doPost();
                 dialog.dismiss();

@@ -33,31 +33,43 @@
             android:id="@+id/pick_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Set Date" />
+            android:text="@string/set_date" />
 
         <Button
             android:id="@+id/pick_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Set Duration" />
+            android:text="@string/set_duration" />
 
         <Button
             android:id="@+id/list_alarms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="List Alarms" />
+            android:text="@string/list_alarms" />
 
         <Button
             android:id="@+id/clear_alarms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Clear Alarms" />
+            android:text="@string/clear_alarms" />
 
         <Button
             android:id="@+id/delete_alarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delete" />
+            android:text="@string/delete" />
+
+        <Button
+            android:id="@+id/snooze_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/snooze" />
+
+        <Button
+            android:id="@+id/stop_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/stop" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,14 +84,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="URL" />
+            android:text="@string/url" />
 
         <Button
             android:id="@+id/SetURLButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SetURL" />
+            android:text="@string/seturl" />
     </LinearLayout>
 </LinearLayout>
 
