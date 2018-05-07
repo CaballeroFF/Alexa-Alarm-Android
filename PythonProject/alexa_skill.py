@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_ask import Ask, statement, session, question
+from flask_ask import Ask, statement, question
 from datetime import datetime
 
 import delighted_clock as dl
@@ -19,14 +19,42 @@ def homepage():
 	return "hi there, how is it going."
 
 
-@app.route('/listalarms', methods=['GET', 'POST'])
-def alarms_list_route():
+@app.route('/deletealarm', methods=['POST', 'GET'])
+def delete_alarm_route():
 	send_message = 'nothing sent'
 
 	if request.method == 'POST':
-		# clear alarms on method POST
+		# get data from POST method (get_data() will be deprecated soon)
+		# post_data is assumed to be a key from dct
+		post_data = request.get_data().decode()
+		# post_data is 'hh:mm yyyy-MM-dd' format
+		date_list = str(post_data).split(" ")
+		# time portion of data after split
+		time = date_list[0]
+		# date portion of data after split
+		date = date_list[1]
+		# delete alarm
+		no_intent(time)
+		send_message = 'alarm {} {} deleted'.format(time, date)
+	return json.dumps(send_message)
+
+
+@app.route('/clearalarms', methods=['GET'])
+def clear_alarms_route():
+	send_message = 'nothing sent'
+
+	if request.method == 'GET':
+		# clear alarms on method GET
 		clear_alarms()
 		send_message = 'alarms cleared'
+
+	return json.dumps(send_message)
+
+
+@app.route('/listalarms', methods=['GET'])
+def alarms_list_route():
+	send_message = 'nothing sent'
+
 	if request.method == 'GET':
 		# list alarms on method GET
 		list_alarms()
@@ -48,7 +76,7 @@ def alarm_set_route():
 		# time portion of data after split
 		time = date_list[0]
 		# date portion of data after split
-		date = date_list[2]
+		date = date_list[1]
 
 		# check if time is in ISO-8601 duration format
 		# meaning it has a letter not just numbers
@@ -69,10 +97,13 @@ def alarm_set_route():
 
 
 def print_console(msg):
+	# text Border
 	pounds = '#'
-	print(len(msg))
+	# + 7 because msg has 8 extra characters(#...msg...#)
+	# and pounds already has one #
 	for i in range(len(msg) + 7):
 		pounds += '#'
+	# print top and bottom borders and msg in middle
 	print('\n' + pounds)
 	print('#   ' + msg + '   #')
 	print(pounds + '\n')
