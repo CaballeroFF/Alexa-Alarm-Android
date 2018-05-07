@@ -7,8 +7,6 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-<<<<<<< HEAD
-=======
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
@@ -20,5 +18,4 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
->>>>>>> Tabs
 </LinearLayout>

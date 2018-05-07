@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,14 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".TabOneFragment"
     android:orientation="vertical">
-=======
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
->>>>>>> Tabs
 
     <LinearLayout
         android:id="@+id/OutPutLayout"
@@ -36,7 +27,6 @@
         android:id="@+id/RequestButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
         android:orientation="vertical">
 
         <Button
@@ -68,23 +58,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete" />
-=======
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/GETRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="GET" />
-
-        <Button
-            android:id="@+id/POSTRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="POST" />
->>>>>>> Tabs
     </LinearLayout>
 
     <LinearLayout
@@ -108,28 +81,5 @@
             android:layout_height="wrap_content"
             android:text="SetURL" />
     </LinearLayout>
-
-<<<<<<< HEAD
 </LinearLayout>
-=======
-    <LinearLayout
-        android:id="@+id/test_date_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/pick_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Date" />
-
-        <Button
-            android:id="@+id/test"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nap" />
-
-    </LinearLayout>
-</LinearLayout>
->>>>>>> Tabs
