@@ -4,7 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -18,7 +18,6 @@ import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class TabOneFragment extends android.support.v4.app.Fragment implements
@@ -112,26 +111,63 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         snoozeAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //check if alarm is active
+                URLPath = "listalarms";
+                doGet();
+
                 getCalendarInstance();
                 String s = new DateFormater().formatedDate(year, month, day, hour, minute);
                 String[] sl = s.split(" ");
-                outPutText.setText(sl[0]);
+
+                String outMessage = outPutString + "...." + sl[0];
+                boolean areEqual = sl[0].equals(outPutString);
+
+                if(areEqual){
+                    outMessage = "stopping...";
+                    URLPath = "deletealarm";
+                    outPutString = s;
+                    doPost();
+
+                    //wait for doPost to run
+                    (new Handler()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            URLPath = "setalarm";
+                            String s = new DateFormater().formatedDate(year, month, day, hour, minute + 5);
+                            outPutString = s;
+                            doPost();
+                        }
+                    }, 250);
+                }
+                //clear string after use
+                outPutString = null;
+                outPutText.setText(outMessage);
             }
         });
 
         stopAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //check if alarm is active
                 URLPath = "listalarms";
                 doGet();
+
                 getCalendarInstance();
                 String s = new DateFormater().formatedDate(year, month, day, hour, minute);
                 String[] sl = s.split(" ");
-                String twoDates = outPutString + "...." + sl[0];
+
+                String outMessage = outPutString + "...." + sl[0];
                 boolean areEqual = sl[0].equals(outPutString);
+
+                if(areEqual){
+                    outMessage = "stopping...";
+                    URLPath = "deletealarm";
+                    outPutString = s;
+                    doPost();
+                }
+                //clear string after use
                 outPutString = null;
-                Log.v(TAG, Boolean.toString(areEqual) + ">>>>>>>>>>>>>");
-                outPutText.setText(twoDates);
+                outPutText.setText(outMessage);
             }
         });
 		
@@ -140,7 +176,6 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
 
     //HTTP requests
     public void doPost(){
-        outPutString = outPutText.getText().toString();
         if(URLString != null){
             PostURLContentTask postURLContentTask = new PostURLContentTask();
             postURLContentTask.execute(URLString + URLPath, outPutString);
@@ -209,9 +244,11 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
         //format into hh:mm yyyy-mm-dd
         String s = new DateFormater().formatedDate(year, month, day, hour, minute);
 
+        outPutString = s;
         outPutText.setText(s);
         //run HTTP POST
         doPost();
+        outPutString = null;
     }
 
     @Override
@@ -254,11 +291,13 @@ public class TabOneFragment extends android.support.v4.app.Fragment implements
                 String hour = String.valueOf(numberHourPicker.getValue());
                 String minute = String.valueOf(numberMinutePicker.getValue());
                 String duration = new DateFormater().formatedDuration(day, hour, minute);
+                outPutString = duration;
                 outPutText.setText(duration);
 
                 //run HTTP POST
                 doPost();
                 dialog.dismiss();
+                outPutString = null;
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
