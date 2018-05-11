@@ -34,7 +34,7 @@ def delete_alarm_route():
 		# date portion of data after split
 		date = date_list[1]
 		# delete alarm
-		no_intent(time)
+		delete_alarm(time, date)
 		send_message = 'alarm {} {} deleted'.format(time, date)
 	return json.dumps(send_message)
 
@@ -89,7 +89,7 @@ def alarm_set_route():
 		if is_duration:
 			duration(time)
 		else:
-			yes_intent(time, date)
+			set_time_date(time, date)
 		send_message = 'alarm set for {} {}'.format(time, date)
 
 		# returns message when GET method is called
@@ -124,6 +124,7 @@ def duration(aduration):
 	atime = dl.alarm_duration(aduration)[0]
 	adate = dl.alarm_duration(aduration)[1]
 	print('the date is', atime, ' ', adate)
+	dct_key = atime + ' ' + adate
 
 	p = multiprocessing.Process(target=set_alarm, args=(atime, adate))
 	p.start()
@@ -131,7 +132,7 @@ def duration(aduration):
 	print('created child process: ', multiprocessing.active_children())
 	print('with process ID: ', n)
 
-	dct[atime] = n
+	dct[dct_key] = n
 	print('Dictionary entries: ', dct)
 
 	d = datetime.strptime(atime, '%H:%M')
@@ -187,9 +188,10 @@ def list_alarms():
 	return statement(msg)
 
 
-@ask.intent("YesIntent", default={'atime': '9:20', 'adate': 'today'})
-def yes_intent(atime, adate):
+@ask.intent("SetAlarmIntent", default={'atime': '9:20', 'adate': 'today'})
+def set_time_date(atime, adate):
 	global dct
+	dct_key = atime + ' ' + adate
 	print('the date is', atime, ' ', adate)
 
 	p = multiprocessing.Process(target=set_alarm, args=(atime, adate), name='noname')
@@ -197,10 +199,10 @@ def yes_intent(atime, adate):
 	n = p.pid
 	print('created child process: ', multiprocessing.active_children())
 	print('with process ID: ', n)
-	dct[atime] = n
+	dct[dct_key] = n
 
 	print('dictionary ............', dct)
-	print('............', dct[atime])
+	print('............', dct[dct_key])
 
 	d = datetime.strptime(atime, '%H:%M')
 	print('formated time "', d.strftime("%I:%M %p"))
@@ -210,9 +212,10 @@ def yes_intent(atime, adate):
 	return statement(headline_msg)
 
 
-@ask.intent("NoIntent", default={"atime": None})
-def no_intent(atime):
+@ask.intent("DeleteIntent", default={'atime': None, 'adate': None})
+def delete_alarm(atime, adate):
 	global dct
+	dct_key = atime + ' ' + adate
 
 	update_dct()
 	bye_msg = ''
@@ -239,7 +242,7 @@ def no_intent(atime):
 		bye_msg = '{} is not in your alarms'.format(d.strftime("%I:%M %p"))
 	else:
 		# print(dct, dct[atime])
-		p = psutil.Process(dct[atime])
+		p = psutil.Process(dct[dct_key])
 		p.terminate()
 		dct.pop(atime, None)
 		d = datetime.strptime(atime, '%H:%M')
