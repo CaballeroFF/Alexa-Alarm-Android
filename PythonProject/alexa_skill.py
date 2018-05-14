@@ -7,6 +7,7 @@ import multiprocessing
 import psutil
 import os
 import json
+import time
 
 app = Flask(__name__)
 ask = Ask(app, "/skill")
@@ -124,7 +125,8 @@ def duration(aduration):
 	atime = dl.alarm_duration(aduration)[0]
 	adate = dl.alarm_duration(aduration)[1]
 	print('the date is', atime, ' ', adate)
-	dct_key = atime + ' ' + adate
+	dct_key = atime + ',' + adate
+	# ' ' +
 
 	p = multiprocessing.Process(target=set_alarm, args=(atime, adate))
 	p.start()
@@ -179,8 +181,8 @@ def list_alarms():
 				separator = '.'
 			if i == len(dct) - 2:
 				separator = ' and '
-			d = datetime.strptime(k, '%H:%M')
-			msg = msg + d.strftime("%I:%M %p") + separator
+			d = datetime.strptime(k, '%H:%M,%Y-%m-%d')
+			msg = msg + d.strftime('%I:%M %p,%Y-%m-%d') + separator
 	else:
 		print('list is empty')
 		msg = msg + 'empty'
@@ -191,7 +193,13 @@ def list_alarms():
 @ask.intent("SetAlarmIntent", default={'atime': '9:20', 'adate': 'today'})
 def set_time_date(atime, adate):
 	global dct
-	dct_key = atime + ' ' + adate
+
+	ctime = time.localtime()
+	new_date = adate
+	if adate == 'today':
+		new_date = str(ctime.tm_year) + '-' + str(ctime.tm_mon) + '-' + str(ctime.tm_mday)
+
+	dct_key = atime + ',' + new_date
 	print('the date is', atime, ' ', adate)
 
 	p = multiprocessing.Process(target=set_alarm, args=(atime, adate), name='noname')
@@ -215,7 +223,7 @@ def set_time_date(atime, adate):
 @ask.intent("DeleteIntent", default={'atime': None, 'adate': None})
 def delete_alarm(atime, adate):
 	global dct
-	dct_key = atime + ' ' + adate
+	dct_key = atime + ',' + adate
 
 	update_dct()
 	bye_msg = ''
@@ -227,7 +235,7 @@ def delete_alarm(atime, adate):
 
 	for key in dct:
 		print(key)
-		if key == atime:
+		if key == dct_key:
 			print(key, True)
 			analarm = True
 
@@ -238,15 +246,15 @@ def delete_alarm(atime, adate):
 		print('Dictionary ...........', dct)
 		bye_msg = 'alarms are empty.'
 	elif not analarm:
-		d = datetime.strptime(atime, '%H:%M')
-		bye_msg = '{} is not in your alarms'.format(d.strftime("%I:%M %p"))
+		d = datetime.strptime(dct_key, '%H:%M,%Y-%m-%d')
+		bye_msg = '{} is not in your alarms'.format(d.strftime('%I:%M %p,%Y-%m-%d'))
 	else:
 		# print(dct, dct[atime])
 		p = psutil.Process(dct[dct_key])
 		p.terminate()
-		dct.pop(atime, None)
-		d = datetime.strptime(atime, '%H:%M')
-		bye_msg = '{} alarm deleted'.format(d.strftime("%I:%M %p"))
+		dct.pop(dct_key, None)
+		d = datetime.strptime(dct_key, '%H:%M,%Y-%m-%d')
+		bye_msg = '{} alarm deleted'.format(d.strftime('%I:%M %p,%Y-%m-%d'))
 	for child in parent.children(recursive=True):
 		print('child.....', child)
 
