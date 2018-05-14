@@ -1,45 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextClock
-        android:id="@+id/TextClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:format12Hour="hh:mm:ss a"
-        android:textSize="@dimen/text_size_med"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/text_size_small"
-        />
-    <TextClock
-        android:id="@+id/TextDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:format12Hour="dd MMM"
-        android:textSize="@dimen/text_size_small"
-        />
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/TextDayOfWeek"
-        android:layout_width="54dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_size_small" />
-
-    <Button
-        android:id="@+id/worldTimeBttn"
+        android:id="@+id/tabtwotext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="World Time"
-        android:background="@drawable/roundedbutton"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="340dp"
-        />
-
-</LinearLayout>
+        android:text="Hello there tab two user"
+        tools:layout_editor_absoluteX="66dp"
+        tools:layout_editor_absoluteY="32dp" />
+</android.support.constraint.ConstraintLayout>
