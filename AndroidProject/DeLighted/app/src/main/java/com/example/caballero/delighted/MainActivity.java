@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionPageAdapter adapter = new SectionPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new TabOneFragment(), "TAB1");
+        adapter.addFragment(new TabOneFragment(), "Alarm");
         adapter.addFragment(new TabTwoFragment(), "Clock");
-        adapter.addFragment(new TabThreeFragment(), "TAB3");
-        adapter.addFragment(new TabFourFragment(),"TAB4");
+        adapter.addFragment(new TabThreeFragment(), "Timer");
+        adapter.addFragment(new TabFourFragment(),"Stopwatch");
         viewPager.setAdapter(adapter);
     }
 }
