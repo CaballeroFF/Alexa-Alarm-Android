@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AlexaDeLighted</string>
+    <string name="action_settings">Settings</string>
+    <string name="alarm_hint">press to delete alarm</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="url_hint">https://enter DeLighted URL.ngrok.io/</string>
+    <string name="set_url">set</string>
+</resources>
