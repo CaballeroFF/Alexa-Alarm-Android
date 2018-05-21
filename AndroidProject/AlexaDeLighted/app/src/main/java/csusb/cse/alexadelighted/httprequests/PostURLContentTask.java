@@ -16,7 +16,7 @@ public class PostURLContentTask extends AsyncTask<String, Integer, String> {
     @Override
     protected String doInBackground(String... args) {
         String post;
-        int responceCode = -1;
+        int responseCode = -1;
 
         try {
             post = args[1];
@@ -35,8 +35,8 @@ public class PostURLContentTask extends AsyncTask<String, Integer, String> {
             writer.flush();
             writer.close();
 
-            responceCode = request.getResponseCode();
-            Log.d(TAG, "doInBackground: response code" + Integer.toString(responceCode));
+            responseCode = request.getResponseCode();
+            Log.d(TAG, "doInBackground: response code" + Integer.toString(responseCode));
             request.disconnect();
 
         } catch (MalformedURLException e) {
@@ -44,7 +44,7 @@ public class PostURLContentTask extends AsyncTask<String, Integer, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return Integer.toString(responceCode);
+        return Integer.toString(responseCode);
     }
 
     protected void onProgressUpdate(Integer... progress){

@@ -18,6 +18,7 @@ public class GetURLContentTask extends AsyncTask<String, Integer, String> {
     protected String doInBackground(String... urls) {
         StringBuilder result = new StringBuilder();
         Log.d(TAG, "doInBackground: GET");
+        int responseCode = -1;
 
         try{
             URL url = new URL(urls[0]);
@@ -30,6 +31,8 @@ public class GetURLContentTask extends AsyncTask<String, Integer, String> {
             while((line = reader.readLine()) != null){
                 result.append(line);
             }
+
+            responseCode = request.getResponseCode();
 
             request.disconnect();
 

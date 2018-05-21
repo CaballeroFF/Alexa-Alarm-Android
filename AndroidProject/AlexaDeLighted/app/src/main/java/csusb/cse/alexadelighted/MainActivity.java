@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
                         fab.setImageResource(android.R.drawable.ic_input_add);
                         alarmAddButtonListener();
                         //todo: look into another way to save data in fragment instead
+                        updateArray();
                         sendAlarmData();
                         break;
                     case 1:
@@ -255,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
             Log.d(TAG, "passDuration: raw=" + string + " formated=" + mHttpPassString);
             //todo: uncomment doPost
             doPOST();
+            //successful request code 200
             if(responseCode.equals("200")){
                 mDataSet.add(mHttpPassString);
             } else {
@@ -342,12 +344,28 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
                 }
             }
         });
+
+        fab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mURLPath = "listalarms";
+                doGet();
+                String trimmedString = mHttpPassString.replaceAll("\"", "");
+                Snackbar.make(view, trimmedString, Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "onLongClick: " + trimmedString);
+
+                ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(trimmedString.split(",")));
+                Log.d(TAG, "onLongClick: " + arrayList);
+                return false;
+            }
+        });
     }
     //endregion
 
     //region Description: HTTP Requests
     public void doGet(){
         //todo: can it be made a parameter
+        //todo: get response code
 
         if(mURLString != null){
             GetURLContentTask getURLContentTask = new GetURLContentTask();
@@ -386,6 +404,19 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
         }
     }
     //endregion
-}
 
-//todo: update app when alarm goes off, or alarm is added with voice
+    //region Description: update data array
+    public void updateArray(){
+        //todo: this makes tabs slow, think of a policy to refresh
+        mURLPath = "listalarms";
+        doGet();
+        String trimmedString = mHttpPassString.replaceAll("\"", "");
+        Log.d(TAG, "updateArray: " + trimmedString + Boolean.toString(trimmedString.equals("")));
+        if(!trimmedString.equals("")) {
+            mDataSet = new ArrayList<>(Arrays.asList(trimmedString.split(",")));
+        } else {
+            mDataSet = new ArrayList<>();
+        }
+    }
+    //endregion
+}
