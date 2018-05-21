@@ -252,10 +252,9 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
             mURLPath = "setalarm";
             mHttpPassString = new DateFormater().addDuration(string);
             mDataSet.add(mHttpPassString);
-            //sendAlarmData();
             Log.d(TAG, "passDuration: raw=" + string + " formated=" + mHttpPassString);
             //todo: uncomment doPost
-            //doPOST();
+            doPOST();
         } else {
             Snackbar.make(mViewPager, "URL is null", Snackbar.LENGTH_SHORT).show();
         }
@@ -266,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
         AlarmFragment alarmFragment = new AlarmFragment();
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("ALARM", mDataSet);
+        bundle.putString("ADDRESS", mURLString);
         alarmFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.alarm_relative_layout, alarmFragment)
@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
         mHttpPassString = new DateFormater().formatedDate(mYear, mMonth, mDay, mHour, mMinute);
         Log.d(TAG, "onTimeSet: " + mHttpPassString);
         //todo: uncomment doPost
-        //doPOST();
+        doPOST();
         mDataSet.add(mHttpPassString);
         sendAlarmData();
     }
@@ -323,9 +323,12 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mURLPath = "setalarm";
-                Snackbar.make(view, "ADD", Snackbar.LENGTH_SHORT).show();
-                pickTime();
+                if(mURLString != null) {
+                    mURLPath = "setalarm";
+                    pickTime();
+                } else {
+                    Snackbar.make(view, "URL is null", Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -347,8 +350,8 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
                 e.printStackTrace();
             }
         } else {
-            Snackbar.make(this.findViewById(R.id.main_content), "URL is null", Snackbar.LENGTH_SHORT)
-                    .show();
+//            Snackbar.make(this.findViewById(R.id.main_content), "URL is null", Snackbar.LENGTH_SHORT)
+//                    .show();
             Log.d(TAG, "doGet: URL is null");
         }
     }
@@ -361,10 +364,12 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
             PostURLContentTask postURLContentTask = new PostURLContentTask();
             postURLContentTask.execute(mURLString + mURLPath, mHttpPassString);
         } else {
-            Snackbar.make(this.findViewById(R.id.main_content), "URL is null", Snackbar.LENGTH_SHORT)
-                    .show();
+//            Snackbar.make(this.findViewById(R.id.main_content), "URL is null", Snackbar.LENGTH_SHORT)
+//                    .show();
             Log.d(TAG, "doPOST: URL is null");
         }
     }
     //endregion
 }
+
+//todo: delete button, null on destroy, update app when alarm goes off

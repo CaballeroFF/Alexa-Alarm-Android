@@ -2,6 +2,7 @@ package csusb.cse.alexadelighted.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import csusb.cse.alexadelighted.R;
+import csusb.cse.alexadelighted.httprequests.PostURLContentTask;
 
 import java.util.ArrayList;
 
@@ -20,6 +22,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private static final String TAG = "DEBUG";
     private ArrayList<String> mDataSet;
     private Context mContext;
+    private String mURLString;
+    private String mHttpPassString;
 
     // Provide a reference to the views for each data item
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -39,8 +43,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     //constructor
-    public RecyclerAdapter(Context mContext, ArrayList<String> mDataSet) {
+    public RecyclerAdapter(Context mContext, ArrayList<String> mDataSet, String address) {
         Log.d(TAG, "RecyclerAdapter: ");
+        this.mURLString = address;
         this.mDataSet = mDataSet;
         this.mContext = mContext;
     }
@@ -62,9 +67,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.mTrash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDataSet.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, mDataSet.size());
+                if(mURLString != null) {
+                    mHttpPassString = mDataSet.get(position);
+                    doPOST();
+                    mDataSet.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, mDataSet.size());
+                } else {
+                    Snackbar.make(view, "URL is null", Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -73,5 +84,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public int getItemCount() {
         Log.d(TAG, "getItemCount: ");
         return mDataSet.size();
+    }
+
+    public void doPOST(){
+        Log.d(TAG, "doPOST: out string " + mHttpPassString);
+
+        if(mURLString != null){
+            PostURLContentTask postURLContentTask = new PostURLContentTask();
+            postURLContentTask.execute(mURLString + "deletealarm" , mHttpPassString);
+        } else {
+            Log.d(TAG, "doPOST: URL is null");
+        }
     }
 }

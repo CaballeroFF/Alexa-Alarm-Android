@@ -24,6 +24,8 @@ public class AlarmFragment extends Fragment {
     private ArrayList<String> mDataSet = new ArrayList<>();
     private View rootView;
 
+    private String mURLString;
+
 
     @Nullable
     @Override
@@ -41,6 +43,7 @@ public class AlarmFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mDataSet = bundle.getStringArrayList("ALARM");
+            mURLString = bundle.getString("ADDRESS");
             Log.d(TAG, "onStart: " + mDataSet);
         }
         initRecyclerView();
@@ -49,7 +52,7 @@ public class AlarmFragment extends Fragment {
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: data " + mDataSet);
         mAlarmRecycler = rootView.findViewById(R.id.alarm_layout_recycler_view);
-        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(getActivity(), mDataSet);
+        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(getActivity(), mDataSet, mURLString);
         mAlarmRecycler.setAdapter(recyclerAdapter);
         mAlarmRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
