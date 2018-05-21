@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
     private String mURLPath;
     //string used for GET and POST
     private String mHttpPassString;
+    String responseCode = "null";
     //endregion
 
     // region Description: date picker values/variables
@@ -251,10 +252,15 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
         if(mURLString != null) {
             mURLPath = "setalarm";
             mHttpPassString = new DateFormater().addDuration(string);
-            mDataSet.add(mHttpPassString);
             Log.d(TAG, "passDuration: raw=" + string + " formated=" + mHttpPassString);
             //todo: uncomment doPost
             doPOST();
+            if(responseCode.equals("200")){
+                mDataSet.add(mHttpPassString);
+            } else {
+                Snackbar.make(this.findViewById(R.id.main_content), "code: " + responseCode, Snackbar.LENGTH_SHORT)
+                        .show();
+            }
         } else {
             Snackbar.make(mViewPager, "URL is null", Snackbar.LENGTH_SHORT).show();
         }
@@ -315,7 +321,12 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
         Log.d(TAG, "onTimeSet: " + mHttpPassString);
         //todo: uncomment doPost
         doPOST();
-        mDataSet.add(mHttpPassString);
+        if(responseCode.equals("200")){
+            mDataSet.add(mHttpPassString);
+        } else {
+            Snackbar.make(this.findViewById(R.id.main_content), "code: " + responseCode, Snackbar.LENGTH_SHORT)
+                    .show();
+        }
         sendAlarmData();
     }
 
@@ -350,26 +361,31 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
                 e.printStackTrace();
             }
         } else {
-//            Snackbar.make(this.findViewById(R.id.main_content), "URL is null", Snackbar.LENGTH_SHORT)
-//                    .show();
             Log.d(TAG, "doGet: URL is null");
         }
     }
 
     public void doPOST(){
+        //todo: make it return response code string
         //todo: can it take parameters
         Log.d(TAG, "doPOST: out string " + mHttpPassString);
 
         if(mURLString != null){
             PostURLContentTask postURLContentTask = new PostURLContentTask();
             postURLContentTask.execute(mURLString + mURLPath, mHttpPassString);
+            try {
+                responseCode = postURLContentTask.get();
+                Log.d(TAG, "doPOST:................ " + postURLContentTask.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         } else {
-//            Snackbar.make(this.findViewById(R.id.main_content), "URL is null", Snackbar.LENGTH_SHORT)
-//                    .show();
             Log.d(TAG, "doPOST: URL is null");
         }
     }
     //endregion
 }
 
-//todo: delete button, null on destroy, update app when alarm goes off
+//todo: update app when alarm goes off, or alarm is added with voice

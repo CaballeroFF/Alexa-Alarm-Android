@@ -15,7 +15,8 @@ public class PostURLContentTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(String... args) {
-        String post = "";
+        String post;
+        int responceCode = -1;
 
         try {
             post = args[1];
@@ -34,7 +35,7 @@ public class PostURLContentTask extends AsyncTask<String, Integer, String> {
             writer.flush();
             writer.close();
 
-            int responceCode = request.getResponseCode();
+            responceCode = request.getResponseCode();
             Log.d(TAG, "doInBackground: response code" + Integer.toString(responceCode));
             request.disconnect();
 
@@ -43,7 +44,7 @@ public class PostURLContentTask extends AsyncTask<String, Integer, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return Integer.toString(responceCode);
     }
 
     protected void onProgressUpdate(Integer... progress){

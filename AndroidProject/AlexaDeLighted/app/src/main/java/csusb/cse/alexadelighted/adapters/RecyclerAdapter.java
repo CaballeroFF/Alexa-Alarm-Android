@@ -16,6 +16,7 @@ import csusb.cse.alexadelighted.R;
 import csusb.cse.alexadelighted.httprequests.PostURLContentTask;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
@@ -24,6 +25,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private Context mContext;
     private String mURLString;
     private String mHttpPassString;
+
+    private static View view;
+    String responceCode = "null";
 
     // Provide a reference to the views for each data item
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -36,6 +40,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             super(itemView);
             Log.d(TAG, "ViewHolder: ");
 
+            view = itemView;
             mAlarm = itemView.findViewById(R.id.alarm_recycler_text);
             mTrash = itemView.findViewById(R.id.recycler_trash);
             mRelativeLayout = itemView.findViewById(R.id.alarm_recycler_parent_layout);
@@ -73,6 +78,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     mDataSet.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, mDataSet.size());
+                    if(!responceCode.equals("200")) {
+                        Snackbar.make(view, "code: " + responceCode, Snackbar.LENGTH_SHORT).show();
+                    }
+
+//                  do we want to let the user erase if there is no connection??
+//                    if(responceCode.equals("200")) {
+//                        mDataSet.remove(position);
+//                        notifyItemRemoved(position);
+//                        notifyItemRangeChanged(position, mDataSet.size());
+//                    } else {
+//                        Snackbar.make(view, "code: " + responceCode, Snackbar.LENGTH_SHORT).show();
+//                    }
+
                 } else {
                     Snackbar.make(view, "URL is null", Snackbar.LENGTH_SHORT).show();
                 }
@@ -92,6 +110,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         if(mURLString != null){
             PostURLContentTask postURLContentTask = new PostURLContentTask();
             postURLContentTask.execute(mURLString + "deletealarm" , mHttpPassString);
+            try {
+                responceCode = postURLContentTask.get();
+                Log.d(TAG, "doPOST:......ra.......... " + postURLContentTask.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+//            Snackbar.make(view.findViewById(R.id.alarm_recycler_parent_layout),
+//                    "code: " + responceCode, Snackbar.LENGTH_SHORT).show();
         } else {
             Log.d(TAG, "doPOST: URL is null");
         }
