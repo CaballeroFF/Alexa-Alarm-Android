@@ -125,31 +125,35 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
                         sendAlarmData();
                         break;
                     case 1:
-                        fab.setEnabled(true);
-                        fab.setVisibility(View.VISIBLE);
-                        fab.setImageResource(R.drawable.world);
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Snackbar.make(view, "WORLD", Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
-                        break;
-                    case 2:
                         fab.setEnabled(false);
                         fab.setVisibility(View.GONE);
                         break;
-                    case 3:
-                        fab.setEnabled(true);
-                        fab.setVisibility(View.VISIBLE);
-                        fab.setImageResource(android.R.drawable.ic_media_play);
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Snackbar.make(view, "STOP WATCH", Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
-                        break;
+//                    case 1:
+//                        fab.setEnabled(true);
+//                        fab.setVisibility(View.VISIBLE);
+//                        fab.setImageResource(R.drawable.world);
+//                        fab.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Snackbar.make(view, "WORLD", Snackbar.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                        break;
+//                    case 2:
+//                        fab.setEnabled(false);
+//                        fab.setVisibility(View.GONE);
+//                        break;
+//                    case 3:
+//                        fab.setEnabled(true);
+//                        fab.setVisibility(View.VISIBLE);
+//                        fab.setImageResource(android.R.drawable.ic_media_play);
+//                        fab.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Snackbar.make(view, "STOP WATCH", Snackbar.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                        break;
                     default:
                         fab.setEnabled(true);
                         fab.setVisibility(View.VISIBLE);
@@ -239,9 +243,9 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         adapter.addFragment(new AlarmFragment(), "alarm");
-        adapter.addFragment(new ClockFragment(), "clock");
+        // adapter.addFragment(new ClockFragment(), "clock");
         adapter.addFragment(new TimerFragment(), "timer");
-        adapter.addFragment(new StopWatchFragment(), "stop watch");
+        // adapter.addFragment(new StopWatchFragment(), "stop watch");
         viewPager.setAdapter(adapter);
     }
 
