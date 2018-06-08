@@ -23,7 +23,8 @@ public class StopWatchFragment extends Fragment {
 
     private TextView timeViwer,txtValue;
     Handler customHandler = new Handler();
-    private LinearLayout txtcontainer;
+
+    String currentTime,currentTimeandLaps;
 
     long startTime=0L, timeInMilliseconds=0L, timeSwapBuff=0L,updateTime=0L;
 
@@ -36,23 +37,24 @@ public class StopWatchFragment extends Fragment {
             int mins = secs/60;
             secs%=60;
             int millisec = (int) (updateTime%1000);
-            timeViwer.setText(""+String.format("%02d",mins)+":"+
+            currentTime = ""+String.format("%02d",mins)+":"+
                     String.format("%02d",secs)+":"+
-                    String.format("%03d",millisec));
+                    String.format("%03d",millisec);
+            timeViwer.setText(currentTime);
             customHandler.postDelayed(this,0);
         }
     };
 
-    TextView textView;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
+        Log.d(TAG, "onCreateView: stopwatch");
 
         View rootView = inflater.inflate(R.layout.stop_watch_layout, container, false);
         timeViwer =  rootView.findViewById(R.id.stopwatchTimer);
-        txtcontainer = rootView.findViewById(R.id.txtcontainer);
+        txtValue = rootView.findViewById(R.id.timeLaps);
+
+        Log.d(TAG, "onCreateView: the laps worked");
 
         Button btnLap = rootView.findViewById(R.id.lapBtn);
         Button btnPause = rootView.findViewById(R.id.pauseBtn);
@@ -78,11 +80,16 @@ public class StopWatchFragment extends Fragment {
         btnLap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LayoutInflater inflaterTime = (LayoutInflater)getActivity().getBaseContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-                View addview = inflaterTime.inflate(R.layout.laptimes,null);
-                txtValue = view.findViewById(R.id.lapsTime);
-                txtValue.setText("hello");
-//                txtcontainer.addView(addview);
+                if (currentTime != null){
+                    if (currentTimeandLaps == null){
+                        txtValue.setText(currentTime);
+                        currentTimeandLaps = currentTime;
+                    }
+                    else{
+                        currentTimeandLaps = currentTimeandLaps + "\n" + currentTime;
+                        txtValue.setText(currentTimeandLaps);
+                    }
+                }
             }
         });
         return rootView;

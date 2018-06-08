@@ -124,8 +124,10 @@ public class MainActivity extends AppCompatActivity implements TimerFragment.Dat
                         fab.setImageResource(android.R.drawable.ic_input_add);
                         alarmAddButtonListener();
                         //todo: look into another way to save data in fragment instead
-                        updateArray();
-                        sendAlarmData();
+                        if(mURLPath != null){
+                            updateArray();
+                            sendAlarmData();
+                        }
                         break;
                     case 1:
                         fab.setEnabled(true);
