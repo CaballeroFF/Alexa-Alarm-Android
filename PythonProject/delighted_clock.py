@@ -134,6 +134,9 @@ def set_alarm(salarm, sdate):
 	# 	print('in loop')
 	#
 	# 	stop = False
+	#   KEEP FIRST WHILE LOOP IF NO SNOOZE
+	#   KEEP SECOND WHILE LOOP IF THERE IS A SNOOZE
+	#   while True:
 	# 	while dl.ir_approach():
 	# 		print(chr(7))
 	# 		dl.one_time()
@@ -144,6 +147,7 @@ def set_alarm(salarm, sdate):
 	# 			break
 	# 	dl.clean_up()
 	#
+	#   snoozed code!!!!!
 	# 	if not stop:
 	# 		snooze_min = int(timelist[1]) + 1  # snooze time
 	# 		snooze_hr = int(timelist[0])

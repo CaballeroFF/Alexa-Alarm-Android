@@ -281,14 +281,17 @@ def set_alarm(tstr, dstr):
 def update_dct():
 	global dct
 	print('dictionary.......', dct)
+
 	zombies = []
+
 	for k in dct:
 		print('pid: ', dct[k])
-		p = psutil.Process(dct[k])
-		print(p.status())
-		if p.status() == psutil.STATUS_ZOMBIE:
-			print('.........zombie state..........')
+		try:
+			p = psutil.Process(dct[k])
+			print(p.name(), ' ', p.status())
+		except:
 			zombies.append(k)
+			print(k, ':', dct[k], 'is a zombie')
 	for dead in zombies:
 		del dct[dead]
 
